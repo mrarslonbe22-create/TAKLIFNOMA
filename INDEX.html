@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Alimatjon &amp; Durdonaxon — To'y taklifnomasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Cinzel:wght@500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#f8f2e4;
+    --ivory-deep:#efe6cf;
+    --indigo:#16233f;
+    --indigo-2:#1f3357;
+    --gold:#c8a24b;
+    --gold-soft:#e6cf94;
+    --wine:#7c1f35;
+    --emerald:#1f4d3d;
+    --ink:#2a2318;
+    --ease:cubic-bezier(.22,.9,.32,1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'EB Garamond', serif;
+    background:var(--ivory);
+    color:var(--ink);
+    overflow:hidden;
+    position:relative;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important;}
+  }
+
+  /* ---------- background texture ---------- */
+  .bg-pattern{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    opacity:.16;
+  }
+  .bg-vignette{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(ellipse at center, transparent 45%, rgba(22,35,63,.10) 100%);
+  }
+
+  .stage{
+    position:relative; z-index:2;
+    width:100%; height:100vh; height:100dvh;
+  }
+
+  .screen{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    padding:6vh 6vw;
+    opacity:0; visibility:hidden;
+    pointer-events:none;
+    transition:opacity .7s var(--ease);
+  }
+  .screen.active{
+    opacity:1; visibility:visible; pointer-events:auto;
+  }
+
+  .card{
+    width:100%; max-width:520px;
+    max-height:88vh;
+    overflow-y:auto;
+    scrollbar-width:none;
+    text-align:center;
+    position:relative;
+  }
+  .card::-webkit-scrollbar{display:none;}
+
+  /* ---------- eyebrow labels ---------- */
+  .eyebrow{
+    font-family:'Cinzel', serif;
+    font-size:.68rem;
+    letter-spacing:.42em;
+    color:var(--wine);
+    text-transform:uppercase;
+    margin-bottom:.9rem;
+  }
+
+  /* ================= SPLASH ================= */
+  #splash .card{ display:flex; flex-direction:column; align-items:center; gap:1.4rem; }
+
+  .medallion{
+    width:min(46vw, 210px);
+    height:min(46vw, 210px);
+    opacity:0;
+    transform:scale(.75) rotate(-8deg);
+    animation:bloom 1.6s var(--ease) .2s forwards;
+  }
+  @keyframes bloom{
+    to{opacity:1; transform:scale(1) rotate(0deg);}
+  }
+  .medallion path, .medallion circle{
+    transform-origin:center;
+  }
+  .medallion .petal{
+    animation:petalIn 1.3s var(--ease) both;
+  }
+  .medallion .petal:nth-child(1){animation-delay:.25s}
+  .medallion .petal:nth-child(2){animation-delay:.32s}
+  .medallion .petal:nth-child(3){animation-delay:.39s}
+  .medallion .petal:nth-child(4){animation-delay:.46s}
+  .medallion .petal:nth-child(5){animation-delay:.53s}
+  .medallion .petal:nth-child(6){animation-delay:.6s}
+  .medallion .petal:nth-child(7){animation-delay:.67s}
+  .medallion .petal:nth-child(8){animation-delay:.74s}
+  @keyframes petalIn{
+    from{opacity:0; transform:scale(.2);}
+    to{opacity:1; transform:scale(1);}
+  }
+
+  .salom{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:clamp(2rem, 8vw, 3.1rem);
+    color:var(--indigo);
+    opacity:0;
+    letter-spacing:.01em;
+    animation:riseIn 1s var(--ease) 1.5s forwards;
+  }
+  .salom-sub{
+    font-size:clamp(.95rem, 3vw, 1.15rem);
+    color:var(--ink);
+    opacity:.75;
+    opacity:0;
+    max-width:340px;
+    line-height:1.6;
+    animation:riseIn 1s var(--ease) 2.1s forwards;
+  }
+  @keyframes riseIn{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .tap-hint{
+    margin-top:.6rem;
+    font-family:'Cinzel', serif;
+    font-size:.62rem;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--gold);
+    opacity:0;
+    animation:riseIn 1s var(--ease) 2.7s forwards, pulse 2s ease-in-out 3.7s infinite;
+    cursor:pointer;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:.55;} 50%{opacity:1;}
+  }
+
+  /* ================= MAIN INVITATION ================= */
+  .frame{
+    position:relative;
+    padding:2.6rem 1.6rem 2.2rem;
+  }
+  .corner{
+    position:absolute; width:52px; height:52px; opacity:.85;
+  }
+  .corner.tl{top:0; left:0;}
+  .corner.tr{top:0; right:0; transform:scaleX(-1);}
+  .corner.bl{bottom:0; left:0; transform:scaleY(-1);}
+  .corner.br{bottom:0; right:0; transform:scale(-1,-1);}
+
+  .names-wrap{ margin:1.1rem 0 1.3rem; }
+  .name{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(2.1rem, 9vw, 3rem);
+    color:var(--indigo);
+    line-height:1.15;
+  }
+  .amp{
+    display:block;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.4rem;
+    color:var(--wine);
+    margin:.15rem 0;
+  }
+  .amp::before, .amp::after{
+    content:'';
+  }
+
+  .invite-text{
+    font-size:clamp(1rem, 3.4vw, 1.15rem);
+    line-height:1.75;
+    color:var(--ink);
+    max-width:360px;
+    margin:0 auto 1.9rem;
+  }
+  .invite-text b{ color:var(--wine); font-weight:600; }
+
+  .divider{
+    width:64px; height:2px; margin:0 auto 1.5rem;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    position:relative;
+  }
+  .divider::after{
+    content:'❖';
+    position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-52%);
+    font-size:.75rem; color:var(--gold);
+    background:var(--ivory);
+    padding:0 8px;
+  }
+
+  .btn-row{
+    display:flex; gap:.9rem; flex-wrap:wrap; justify-content:center; margin-top:.4rem;
+  }
+  .btn{
+    flex:1 1 150px;
+    min-width:150px;
+    font-family:'Cinzel', serif;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ivory);
+    background:linear-gradient(160deg, var(--indigo-2), var(--indigo));
+    border:1px solid var(--gold-soft);
+    border-radius:2px;
+    padding:1rem .8rem;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+    box-shadow:0 6px 18px rgba(22,35,63,.18);
+  }
+  .btn span{ position:relative; z-index:2; display:block;}
+  .btn small{ display:block; font-family:'EB Garamond', serif; text-transform:none; letter-spacing:0; font-size:.85rem; margin-top:.3rem; opacity:.85; font-style:italic;}
+  .btn:hover{ transform:translateY(-3px); box-shadow:0 10px 24px rgba(22,35,63,.28); }
+  .btn.wine{ background:linear-gradient(160deg, #8f2440, var(--wine)); }
+  .btn::before{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 30% 20%, rgba(230,207,148,.35), transparent 60%);
+  }
+
+  /* ================= SUB SCREENS ================= */
+  .back-btn{
+    position:absolute; top:1.4rem; left:1.4rem;
+    font-family:'Cinzel', serif;
+    font-size:.62rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--indigo);
+    opacity:.7;
+    cursor:pointer;
+    display:flex; align-items:center; gap:.4rem;
+    z-index:5;
+  }
+  .back-btn:hover{ opacity:1; }
+
+  .sub-title{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(1.7rem,6vw,2.3rem);
+    color:var(--indigo);
+    margin-bottom:.2rem;
+  }
+
+  /* ---- date screen ---- */
+  .date-hero{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:clamp(2.6rem, 11vw, 3.6rem);
+    color:var(--wine);
+    line-height:1;
+    margin:.4rem 0 .1rem;
+  }
+  .date-year{
+    font-family:'Cinzel', serif;
+    letter-spacing:.3em;
+    font-size:.85rem;
+    color:var(--indigo);
+    opacity:.8;
+    margin-bottom:1.6rem;
+  }
+
+  .mini-cal{
+    background:rgba(255,255,255,.5);
+    border:1px solid var(--gold-soft);
+    border-radius:10px;
+    padding:1rem 1.1rem 1.2rem;
+    max-width:300px;
+    margin:0 auto 1.8rem;
+  }
+  .mini-cal-head{
+    font-family:'Cinzel', serif;
+    font-size:.68rem;
+    letter-spacing:.2em;
+    color:var(--indigo);
+    margin-bottom:.7rem;
+    text-transform:uppercase;
+  }
+  .mini-cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:4px;
+    font-size:.72rem;
+  }
+  .mini-cal-grid .dow{
+    font-family:'Cinzel', serif;
+    font-size:.55rem;
+    color:var(--wine);
+    opacity:.7;
+    padding-bottom:2px;
+  }
+  .mini-cal-grid .day{
+    aspect-ratio:1/1;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%;
+    color:var(--ink);
+    opacity:.75;
+  }
+  .mini-cal-grid .day.blank{ visibility:hidden; }
+  .mini-cal-grid .day.highlight{
+    background:var(--wine);
+    color:var(--ivory);
+    font-weight:600;
+    opacity:1;
+    box-shadow:0 0 0 3px rgba(124,31,53,.18);
+    animation:ring 2.4s ease-in-out infinite;
+  }
+  @keyframes ring{
+    0%,100%{box-shadow:0 0 0 3px rgba(124,31,53,.18);}
+    50%{box-shadow:0 0 0 6px rgba(124,31,53,.05);}
+  }
+
+  .countdown-label{
+    font-family:'Cinzel', serif;
+    font-size:.62rem;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:.8rem;
+  }
+  .countdown{
+    display:flex; justify-content:center; gap:.6rem;
+  }
+  .cd-unit{
+    background:linear-gradient(160deg, var(--indigo-2), var(--indigo));
+    border:1px solid var(--gold-soft);
+    border-radius:8px;
+    padding:.7rem .55rem .5rem;
+    min-width:58px;
+  }
+  .cd-num{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:1.7rem;
+    color:var(--gold-soft);
+    line-height:1;
+  }
+  .cd-cap{
+    font-family:'Cinzel', serif;
+    font-size:.5rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--ivory);
+    opacity:.75;
+    margin-top:.3rem;
+  }
+
+  /* ---- venue screen ---- */
+  .schedule{
+    text-align:left;
+    max-width:360px;
+    margin:1.6rem auto 1.8rem;
+    display:flex; flex-direction:column;
+  }
+  .sched-item{
+    display:flex; align-items:flex-start; gap:1rem;
+    padding:.85rem 0;
+    border-bottom:1px dashed rgba(124,31,53,.25);
+  }
+  .sched-item:last-child{ border-bottom:none; }
+  .sched-time{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:1.5rem;
+    color:var(--wine);
+    min-width:66px;
+  }
+  .sched-body b{
+    display:block;
+    font-family:'Cinzel', serif;
+    font-size:.7rem;
+    letter-spacing:.08em;
+    color:var(--indigo);
+    text-transform:uppercase;
+    margin-bottom:.15rem;
+  }
+  .sched-body span{
+    font-size:.92rem;
+    color:var(--ink);
+    opacity:.85;
+  }
+
+  .venue-box{
+    background:rgba(31,77,61,.07);
+    border:1px solid rgba(31,77,61,.25);
+    border-radius:10px;
+    padding:1.1rem 1.2rem;
+    max-width:360px;
+    margin:0 auto;
+  }
+  .venue-box .eyebrow{ color:var(--emerald); }
+  .venue-name{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:1.25rem;
+    color:var(--emerald);
+    margin-bottom:.25rem;
+  }
+  .venue-addr{
+    font-size:.95rem;
+    color:var(--ink);
+    opacity:.85;
+    line-height:1.5;
+  }
+
+  .footer-note{
+    margin-top:1.6rem;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1rem;
+    color:var(--indigo);
+    opacity:.8;
+  }
+
+  /* floating petals ambience */
+  .petal-float{
+    position:fixed; z-index:1; pointer-events:none;
+    width:14px; height:14px; opacity:.35;
+    animation:floatDown linear infinite;
+  }
+  @keyframes floatDown{
+    from{ transform:translateY(-5vh) rotate(0deg); }
+    to{ transform:translateY(105vh) rotate(360deg); }
+  }
+
+  @media (max-width:420px){
+    .btn-row{ gap:.6rem; }
+    .cd-unit{ min-width:50px; padding:.55rem .4rem .45rem; }
+    .cd-num{ font-size:1.35rem; }
+  }
+</style>
+</head>
+<body>
+
+<svg class="bg-pattern" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="suzani" width="120" height="120" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#7c1f35" stroke-width="1">
+        <circle cx="60" cy="60" r="26"/>
+        <circle cx="0" cy="0" r="26"/>
+        <circle cx="120" cy="0" r="26"/>
+        <circle cx="0" cy="120" r="26"/>
+        <circle cx="120" cy="120" r="26"/>
+      </g>
+      <g fill="#c8a24b" opacity=".5">
+        <circle cx="60" cy="60" r="3"/>
+        <circle cx="0" cy="0" r="3"/>
+        <circle cx="120" cy="0" r="3"/>
+        <circle cx="0" cy="120" r="3"/>
+        <circle cx="120" cy="120" r="3"/>
+      </g>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#suzani)"/>
+</svg>
+<div class="bg-vignette"></div>
+<div id="petals"></div>
+
+<div class="stage">
+
+  <!-- ============ SPLASH SCREEN ============ -->
+  <section id="splash" class="screen active">
+    <div class="card">
+      <svg class="medallion" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(100,100)">
+          <g class="petal" fill="none" stroke="#c8a24b" stroke-width="2">
+            <path d="M0,-70 C22,-55 22,-22 0,-14 C-22,-22 -22,-55 0,-70 Z"/>
+          </g>
+          <g class="petal" fill="none" stroke="#c8a24b" stroke-width="2" transform="rotate(45)">
+            <path d="M0,-70 C22,-55 22,-22 0,-14 C-22,-22 -22,-55 0,-70 Z"/>
+          </g>
+          <g class="petal" fill="none" stroke="#7c1f35" stroke-width="2" transform="rotate(90)">
+            <path d="M0,-70 C22,-55 22,-22 0,-14 C-22,-22 -22,-55 0,-70 Z"/>
+          </g>
+          <g class="petal" fill="none" stroke="#c8a24b" stroke-width="2" transform="rotate(135)">
+            <path d="M0,-70 C22,-55 22,-22 0,-14 C-22,-22 -22,-55 0,-70 Z"/>
+          </g>
+          <g class="petal" fill="none" stroke="#7c1f35" stroke-width="2" transform="rotate(180)">
+            <path d="M0,-70 C22,-55 22,-22 0,-14 C-22,-22 -22,-55 0,-70 Z"/>
+          </g>
+          <g class="petal" fill="none" stroke="#c8a24b" stroke-width="2" transform="rotate(225)">
+            <path d="M0,-70 C22,-55 22,-22 0,-14 C-22,-22 -22,-55 0,-70 Z"/>
+          </g>
+          <g class="petal" fill="none" stroke="#1f4d3d" stroke-width="2" transform="rotate(270)">
+            <path d="M0,-70 C22,-55 22,-22 0,-14 C-22,-22 -22,-55 0,-70 Z"/>
+          </g>
+          <g class="petal" fill="none" stroke="#c8a24b" stroke-width="2" transform="rotate(315)">
+            <path d="M0,-70 C22,-55 22,-22 0,-14 C-22,-22 -22,-55 0,-70 Z"/>
+          </g>
+          <circle r="12" fill="#7c1f35"/>
+          <circle r="6" fill="#c8a24b"/>
+        </g>
+      </svg>
+      <div class="salom">Assalomu alaykum</div>
+      <div class="salom-sub">Sizni qalbimizga eng yaqin kunga — sevgi va baxt to'la bir kunga taklif qilmoqchimiz</div>
+      <div class="tap-hint" id="tapHint">Davom etish uchun bosing ↓</div>
+    </div>
+  </section>
+
+  <!-- ============ MAIN INVITATION ============ -->
+  <section id="main" class="screen">
+    <div class="card frame">
+      <svg class="corner tl" viewBox="0 0 60 60"><path d="M2,2 C2,30 20,50 55,55 M2,2 C25,2 45,15 50,40" fill="none" stroke="#c8a24b" stroke-width="1.4"/><circle cx="2" cy="2" r="3" fill="#7c1f35"/></svg>
+      <svg class="corner tr" viewBox="0 0 60 60"><path d="M2,2 C2,30 20,50 55,55 M2,2 C25,2 45,15 50,40" fill="none" stroke="#c8a24b" stroke-width="1.4"/><circle cx="2" cy="2" r="3" fill="#7c1f35"/></svg>
+      <svg class="corner bl" viewBox="0 0 60 60"><path d="M2,2 C2,30 20,50 55,55 M2,2 C25,2 45,15 50,40" fill="none" stroke="#c8a24b" stroke-width="1.4"/><circle cx="2" cy="2" r="3" fill="#7c1f35"/></svg>
+      <svg class="corner br" viewBox="0 0 60 60"><path d="M2,2 C2,30 20,50 55,55 M2,2 C25,2 45,15 50,40" fill="none" stroke="#c8a24b" stroke-width="1.4"/><circle cx="2" cy="2" r="3" fill="#7c1f35"/></svg>
+
+      <div class="eyebrow">To'y taklifnomasi</div>
+
+      <div class="names-wrap">
+        <div class="name">Alimatjon</div>
+        <div class="amp">va</div>
+        <div class="name">Durdonaxon</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <p class="invite-text">Ikki qalbning bir umrga birlashuvi sharafiga uyushtiriladigan <b>to'y marosimimizga</b> Sizni va oilangizni lutfan tashrif buyurishingizni so'raymiz.</p>
+
+      <div class="btn-row">
+        <button class="btn" onclick="goTo('date')">
+          <span>Sana</span>
+          <small>11-Oktabr, 2026</small>
+        </button>
+        <button class="btn wine" onclick="goTo('venue')">
+          <span>Manzil va Marosim</span>
+          <small>Dastur va joylashuv</small>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DATE SCREEN ============ -->
+  <section id="date" class="screen">
+    <div class="card">
+      <div class="back-btn" onclick="goTo('main')">← Orqaga</div>
+      <div class="eyebrow">Muborak sana</div>
+      <div class="date-hero">11 &nbsp;Oktabr</div>
+      <div class="date-year">— 2 0 2 6 —</div>
+
+      <div class="mini-cal">
+        <div class="mini-cal-head">Oktabr 2026</div>
+        <div class="mini-cal-grid" id="calGrid"></div>
+      </div>
+
+      <div class="countdown-label">To'yimizgacha qoldi</div>
+      <div class="countdown">
+        <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-cap">kun</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cd-hours">00</div><div class="cd-cap">soat</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cd-mins">00</div><div class="cd-cap">daqiqa</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cd-secs">00</div><div class="cd-cap">soniya</div></div>
+      </div>
+
+      <div class="footer-note">Har bir soniya bizni bir-birimizga yaqinlashtirmoqda</div>
+    </div>
+  </section>
+
+  <!-- ============ VENUE SCREEN ============ -->
+  <section id="venue" class="screen">
+    <div class="card">
+      <div class="back-btn" onclick="goTo('main')">← Orqaga</div>
+      <div class="eyebrow">Marosim dasturi</div>
+      <div class="sub-title">To'y kuni o'tqaziladigan</div>
+      <div class="divider"></div>
+
+      <div class="schedule">
+        <div class="sched-item">
+          <div class="sched-time">05:00</div>
+          <div class="sched-body">
+            <b>Erkaklar uchun</b>
+            <span>Nahorgi oshi</span>
+          </div>
+        </div>
+        <div class="sched-item">
+          <div class="sched-time">11:00</div>
+          <div class="sched-body">
+            <b>Ayollar uchun</b>
+            <span>Xotin oshi</span>
+          </div>
+        </div>
+        <div class="sched-item">
+          <div class="sched-time">13:00</div>
+          <div class="sched-body">
+            <b>Barchamiz uchun</b>
+            <span>Bazm</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="venue-box">
+        <div class="eyebrow">Manzil</div>
+        <div class="venue-name">[ To'yxona nomi ]</div>
+        <div class="venue-addr">[ Shahar, tuman, ko'cha va mo'ljal shu yerga kiritiladi ]</div>
+      </div>
+
+      <div class="footer-note">Sizni kutamiz!</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ---------- screen navigation ----------
+  function goTo(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+  document.getElementById('splash').addEventListener('click', ()=> goTo('main'));
+  setTimeout(()=>{
+    if(document.getElementById('splash').classList.contains('active')) goTo('main');
+  }, 6500);
+
+  // ---------- countdown ----------
+  const target = new Date('2026-10-13T05:00:00');
+  function tick(){
+    const now = new Date();
+    let diff = target - now;
+    if(diff < 0) diff = 0;
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor(diff%86400000/3600000);
+    const m = Math.floor(diff%3600000/60000);
+    const s = Math.floor(diff%60000/1000);
+    document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ---------- mini calendar for October 2026 ----------
+  (function buildCalendar(){
+    const grid = document.getElementById('calGrid');
+    const dows = ['Du','Se','Ch','Pa','Ju','Sh','Ya'];
+    dows.forEach(d=>{
+      const el = document.createElement('div');
+      el.className = 'dow';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+    const firstDay = new Date(2026,10,11);
+    let startIndex = (firstDay.getDay() + 6) % 7; // Monday-first index
+    for(let i=0;i<startIndex;i++){
+      const blank = document.createElement('div');
+      blank.className = 'day blank';
+      grid.appendChild(blank);
+    }
+    for(let day=1; day<=31; day++){
+      const el = document.createElement('div');
+      el.className = 'day' + (day===13 ? ' highlight' : '');
+      el.textContent = day;
+      grid.appendChild(el);
+    }
+  })();
+
+  // ---------- ambient floating petals ----------
+  (function petals(){
+    const wrap = document.getElementById('petals');
+    const colors = ['#c8a24b','#7c1f35','#1f4d3d'];
+    for(let i=0;i<14;i++){
+      const p = document.createElement('div');
+      p.className = 'petal-float';
+      p.style.left = Math.random()*100 + 'vw';
+      p.style.top = '-5vh';
+      p.style.animationDuration = (14 + Math.random()*14) + 's';
+      p.style.animationDelay = (Math.random()*14) + 's';
+      p.innerHTML = `<svg viewBox="0 0 20 20"><path d="M10,0 C16,6 16,14 10,20 C4,14 4,6 10,0 Z" fill="${colors[i%3]}"/></svg>`;
+      wrap.appendChild(p);
+    }
+  })();
+</script>
+
+</body>
+</html>
